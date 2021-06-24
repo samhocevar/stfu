@@ -1,7 +1,7 @@
 ﻿//
 //  Stfu — Sam’s Tiny Framework Utilities
 //
-//  Copyright © 2017—2021 Sam Hocevar <sam@hocevar.net>
+//  Copyright © 2013—2021 Sam Hocevar <sam@hocevar.net>
 //
 //  This library is free software. It comes without any warranty, to
 //  the extent permitted by applicable law. You can redistribute it
@@ -19,6 +19,14 @@ namespace Stfu.Linq
 {
     public static class Extensions
     {
+        /// <summary>
+        /// Create a one-element enumerable from a single object
+        /// </summary>
+        public static IEnumerable<T> Yield<T>(this T element)
+        {
+            yield return element;
+        }
+
         /// <summary>
         /// Call a function on each element of a sequence
         /// </summary>
@@ -95,5 +103,12 @@ namespace Stfu.Linq
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> elements,
                                                 IEqualityComparer<T> comparer = null)
             => new HashSet<T>(elements, comparer);
+
+        /// <summary>
+        /// Return whether array contains a given element
+        /// </summary>
+        public static bool Contains<T>(this T[] array, T element)
+            where T : IComparable<T>
+            => Array.Find(array, e => element.CompareTo(e) == 0) != null;
     }
 }
