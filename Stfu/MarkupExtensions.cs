@@ -15,7 +15,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace Stfu.Markup
+namespace Stfu.Wpf
 {
     public class BoolInverter : MarkupExtension, IValueConverter
     {
