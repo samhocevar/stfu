@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <Title>Stfu</Title>
+    <Product>Stfu</Product>
+    <Authors>Sam Hocevar</Authors>
+    <Copyright>Copyright © 2017—2021 Sam Hocevar</Copyright>
+    <Description>Sam’s Tiny Framework Utilities</Description>
+    <PackageLicenseExpression>WTFPL</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/samhocevar/stfu</PackageProjectUrl>
+    <PackageTags>C# .NET WPF</PackageTags>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>net40;netcoreapp3.1</TargetFrameworks>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <UseWPF>true</UseWPF>
+    <DefaultItemExcludes>
+        $(DefaultItemExcludes);gitversion.json;**\*.swp;**\*~;
+    </DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" Version="5.6.10" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" Condition="'$(TargetFramework)' == 'net40'" />
+  </ItemGroup>
+
+</Project>

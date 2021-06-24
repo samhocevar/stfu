@@ -1,0 +1,16 @@
+# Our targets
+obj/
+bin/
+# Visual Studio cruft
+.vs
+*.suo
+*.csproj.user
+*.vcxproj.user
+*.opensdf
+*.opendb
+*.sdf
+*.VC.db
+# Temporary files
+gitversion.json
+# NuGet cruft
+*.nupkg
