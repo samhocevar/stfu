@@ -24,14 +24,14 @@ namespace Stfu
         /// <summary>
         /// Return whether a task with this name exists
         /// </summary>
-        public static bool HasTask(string task_name)
-            => !string.IsNullOrEmpty(RunSchTasks($"/query /tn {task_name} /xml"));
+        public static Result<bool> HasTask(string task_name)
+            => RunSchTasks($"/query /tn {task_name} /xml");
 
         /// <summary>
         /// Install a task with the given name and command line
         /// </summary>
-        public static bool InstallTask(string task_name, string command,
-                                       bool elevated = false, string author = null)
+        public static Result<bool> InstallTask(string task_name, string command,
+                                               bool elevated = false, string author = null)
         {
             var source = $@"{Environment.SystemDirectory}\Tasks\{task_name}";
             var tmp = Path.GetTempFileName();
@@ -41,44 +41,50 @@ namespace Stfu
                 // Create a scheduled task, then edit the resulting XML with some
                 // features that the command line tool does not support, and reload
                 // the XML file.
-                RunSchTasks($"/tn {task_name} /f /create /sc onlogon /tr {command}");
+                var escaped_command = command.Replace("\"", "\"\"\"");
+                var ret = RunSchTasks($"/tn {task_name} /f /create /sc onlogon /tr \"{escaped_command}\"");
+                if (!ret)
+                    return ret;
 
-                var doc = new XmlDocument();
+                var doc = new FixableXmlDocument();
                 doc.Load(source);
-
-                var fixer = new XmlFixer();
                 if (elevated)
                 {
                     // Make sure we use a GroupId, not a UserId; we can’t use the SYSTEM
                     // account because it is not allowed to open GUI programs. We use the
                     // built-in BUILTIN\Users group instead.
-                    fixer.Renames.Add("UserId", "GroupId");
-                    fixer.Replaces.Add("RunLevel", "HighestAvailable"); // run with higest privileges
-                    fixer.Replaces.Add("GroupId", GetLocalUserGroupName());
-                    fixer.Removes.Add("LogonType"); // This tag is only legal for UserId.
+                    doc.Renames.Add("UserId", "GroupId");
+                    doc.Replaces.Add("RunLevel", "HighestAvailable"); // run with higest privileges
+                    doc.Replaces.Add("GroupId", GetLocalUserGroupName());
+                    doc.Removes.Add("LogonType"); // This tag is only legal for UserId.
                 }
 
                 if (author != null)
                 {
-                    fixer.Replaces.Add("Author", author);
+                    doc.Replaces.Add("Author", author);
                 }
 
-                fixer.FixElement(doc.DocumentElement);
+                doc.Fix();
                 doc.Save(tmp);
 
-                RunSchTasks($"/tn {task_name} /f /create /xml \"{tmp}\"");
+                ret = RunSchTasks($"/tn {task_name} /f /create /xml \"{tmp}\"");
+                if (!ret)
+                    return ret;
                 File.Delete(tmp);
-                return true;
+                return (true, null);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return false;
+                return (false, ex.ToString());
             }
         }
 
-        private class XmlFixer
+        private class FixableXmlDocument : XmlDocument
         {
-            public void FixElement(XmlElement node)
+            public void Fix()
+                => FixElement(DocumentElement);
+
+            private void FixElement(XmlElement node)
             {
                 // Rename node if necessary
                 if (Renames.TryGetValue(node.Name, out string new_name))
@@ -150,7 +156,7 @@ namespace Stfu
         }
 
 
-        private static string RunSchTasks(string args)
+        private static Result<bool> RunSchTasks(string args)
         {
             var pi = new ProcessStartInfo()
             {
@@ -158,13 +164,19 @@ namespace Stfu
                 Arguments = args,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
             };
             var p = Process.Start(pi);
             p.WaitForExit();
             var exit_code = p.ExitCode;
-            var stdout = p.StandardOutput.ReadToEnd();
-            return exit_code == 0 ? stdout : null;
+            if (exit_code != 0)
+            {
+                var stdout = p.StandardOutput.ReadToEnd();
+                var stderr = p.StandardOutput.ReadToEnd();
+                return (false, stdout + stderr);
+            }
+            return (true, null);
         }
     }
 }
