@@ -34,6 +34,9 @@ namespace Stfu
         public static implicit operator T(Result<T> val)
             => val.m_val;
 
+        public static implicit operator Result<T>(T val)
+            => new Result<T>(val);
+
         public static implicit operator Result<T>(ValueTuple<T, string> tuple)
             => new Result<T>(tuple.Item1, tuple.Item2);
 

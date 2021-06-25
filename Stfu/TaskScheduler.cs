@@ -42,7 +42,7 @@ namespace Stfu
                 // features that the command line tool does not support, and reload
                 // the XML file.
                 var escaped_command = command.Replace("\"", "\"\"\"");
-                var ret = RunSchTasks($"/tn {task_name} /f /create /sc onlogon /tr \"{escaped_command}\"");
+                var ret = RunSchTasks($"/tn {task_name} /f /create /hresult /sc onlogon /tr \"{escaped_command}\"");
                 if (!ret)
                     return ret;
 
@@ -67,11 +67,11 @@ namespace Stfu
                 doc.Fix();
                 doc.Save(tmp);
 
-                ret = RunSchTasks($"/tn {task_name} /f /create /xml \"{tmp}\"");
+                ret = RunSchTasks($"/tn {task_name} /f /create /hresult /xml \"{tmp}\"");
                 if (!ret)
                     return ret;
                 File.Delete(tmp);
-                return (true, null);
+                return true;
             }
             catch (Exception ex)
             {
@@ -174,9 +174,11 @@ namespace Stfu
             {
                 var stdout = p.StandardOutput.ReadToEnd();
                 var stderr = p.StandardOutput.ReadToEnd();
+                if (string.IsNullOrEmpty(stdout) && string.IsNullOrEmpty(stderr))
+                    return (false, $"Command {pi.FileName} {pi.Arguments} returned code 0x{exit_code:X8}");
                 return (false, stdout + stderr);
             }
-            return (true, null);
+            return true;
         }
     }
 }
