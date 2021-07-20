@@ -11,39 +11,91 @@
 //
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Stfu
 {
-    public class Result<T>
-        where T : new()
+    public class ResultBase
     {
-        public Result(T val)
+        internal ResultBase(string message)
         {
-            m_val = val;
-        }
-
-        public Result(T val, string message)
-        {
-            m_val = val;
             m_message = message;
         }
 
-        public static implicit operator T(Result<T> val)
-            => val.m_val;
-
-        public static implicit operator Result<T>(T val)
-            => new Result<T>(val);
-
-        public static implicit operator Result<T>(ValueTuple<T, string> tuple)
-            => new Result<T>(tuple.Item1, tuple.Item2);
+        public bool IsError
+            => m_message != null;
 
         public string Message
             => m_message;
 
-        private readonly T m_val;
-        private readonly string m_message;
+        private string m_message;
+    }
+
+    public class Result : ResultBase
+    {
+        /// <summary>
+        /// Create a successful result object
+        /// </summary>
+        public Result()
+            : base(null)
+        {
+        }
+
+        public Result(string message)
+            : base(message ?? "")
+        {
+        }
+
+        public static readonly Result Ok = new Result();
+        public static Result Error(string message) => new Result(message);
+    }
+
+    public class Result<T> : ResultBase
+    {
+        /// <summary>
+        /// Create a successful result object
+        /// </summary>
+        /// <param name="val">The value stored in the result</param>
+        public Result(T val)
+            : base(null)
+            => m_value = val;
+
+        /// <summary>
+        /// Create a failed result object with an error message
+        /// </summary>
+        /// <param name="val"></param>
+        /// <param name="message"></param>
+        public Result(T val, string message)
+            : base(message ?? "")
+            => m_value = val;
+
+        public static implicit operator T(Result<T> val)
+            => val.m_value;
+
+        public static implicit operator Result<T>(T val)
+            => new Result<T>(val);
+
+        public static implicit operator Result<T>(Result r)
+        {
+            try
+            {
+                return new Result<T>((T)Activator.CreateInstance(typeof(T)), r.Message);
+            }
+            catch
+            {
+                return (T)Convert.ChangeType(null, typeof(T));
+            }
+        }
+
+
+        public static implicit operator Result<T>(ValueTuple<T, string> tuple)
+            => new Result<T>(tuple.Item1, tuple.Item2);
+
+        /// <summary>
+        /// The value stored in the result object
+        /// </summary>
+        public T Value
+            => m_value;
+
+        private readonly T m_value;
     }
 }

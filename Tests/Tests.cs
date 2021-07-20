@@ -11,6 +11,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 
 namespace Tests
 {
@@ -19,6 +20,29 @@ namespace Tests
         [STAThread]
         public static void Main()
         {
+            TestResult();
+        }
+
+        private static void TestResult()
+        {
+            Stfu.Result r1 = Stfu.Result.Ok;
+            bool b1 = r1.IsError; // false
+
+            Stfu.Result r2 = Stfu.Result.Error("Oops");
+            bool b2 = r2.IsError; // true
+
+            Stfu.Result<int> r3 = (0, "OMG PROBLEM");
+            bool b3 = r3.IsError; // true
+            var e = r3.Message; // "OMG PROBLEM"
+
+            Stfu.Result<int> r4 = 42;
+            bool b4 = r4.IsError; // false
+            int w = r4; // 42
+            var v = r4.Value; // 42
+
+            Stfu.Result<IEnumerable<int>> r5 = Stfu.Result.Ok;
+            bool b5 = r5.IsError; // false
+            var v5 = r5.Value; // null
         }
     }
 }
