@@ -10,8 +10,10 @@
 //  See http://www.wtfpl.net/ for more details.
 //
 
+using Stfu;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Tests
 {
@@ -21,28 +23,38 @@ namespace Tests
         public static void Main()
         {
             TestResult();
+            TestNetwork();
         }
 
         private static void TestResult()
         {
-            Stfu.Result r1 = Stfu.Result.Ok;
+            Result r1 = Result.Ok;
             bool b1 = r1.IsError; // false
 
-            Stfu.Result r2 = Stfu.Result.Error("Oops");
+            Result r2 = Result.Error("Oops");
             bool b2 = r2.IsError; // true
 
-            Stfu.Result<int> r3 = (0, "OMG PROBLEM");
+            Result<int> r3 = (0, "OMG PROBLEM");
             bool b3 = r3.IsError; // true
             var e = r3.Message; // "OMG PROBLEM"
 
-            Stfu.Result<int> r4 = 42;
+            Result<int> r4 = 42;
             bool b4 = r4.IsError; // false
             int w = r4; // 42
             var v = r4.Value; // 42
 
-            Stfu.Result<IEnumerable<int>> r5 = Stfu.Result.Ok;
+            Result<IEnumerable<int>> r5 = Result.Ok;
             bool b5 = r5.IsError; // false
             var v5 = r5.Value; // null
+        }
+
+        private static void TestNetwork()
+        {
+            var ip1 = IPAddress.Parse("192.168.1.1");
+            bool b1 = ip1.IsInternal(); // true
+
+            var ip2 = IPAddress.Parse("123.45.67.89");
+            bool b2 = ip2.IsInternal(); // false
         }
     }
 }
