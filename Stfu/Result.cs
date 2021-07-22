@@ -27,7 +27,7 @@ namespace Stfu
         public string Message
             => m_message;
 
-        private string m_message;
+        protected string m_message;
     }
 
     public class Result : ResultBase
@@ -78,11 +78,11 @@ namespace Stfu
         {
             try
             {
-                return new Result<T>((T)Activator.CreateInstance(typeof(T)), r.Message);
+                return new Result<T>((T)Activator.CreateInstance(typeof(T))) { m_message = r.Message };
             }
             catch
             {
-                return (T)Convert.ChangeType(null, typeof(T));
+                return new Result<T>((T)Convert.ChangeType(null, typeof(T))) { m_message = r.Message };
             }
         }
 

@@ -36,16 +36,24 @@ namespace Tests
 
             Result<int> r3 = (0, "OMG PROBLEM");
             bool b3 = r3.IsError; // true
-            var e = r3.Message; // "OMG PROBLEM"
+            var e3 = r3.Message; // "OMG PROBLEM"
 
             Result<int> r4 = 42;
             bool b4 = r4.IsError; // false
             int w = r4; // 42
             var v = r4.Value; // 42
 
-            Result<IEnumerable<int>> r5 = Result.Ok;
+            Result<List<int>> r5 = Result.Ok;
             bool b5 = r5.IsError; // false
-            var v5 = r5.Value; // null
+            var v5 = r5.Value; // List<int>{}
+
+            Result<IEnumerable<int>> r6 = Result.Ok;
+            bool b6 = r6.IsError; // false
+            var v6 = r6.Value; // null, because IEnumerable<> cannot be constructed
+
+            Result<IEnumerable<int>> r7 = Result.Error("Overflow");
+            bool b7 = r7.IsError; // true
+            var e7 = r7.Message; // "Overflow"
         }
 
         private static void TestNetwork()
