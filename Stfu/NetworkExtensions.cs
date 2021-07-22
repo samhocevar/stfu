@@ -19,7 +19,7 @@ namespace Stfu
     public static class NetworkExtensions
     {
         /// <summary>
-        /// Return whether a given IP is an internal (RFC1918) address
+        /// Return whether a given IP is an internal (RFC1918) or loopback address
         /// </summary>
         public static bool IsInternal(this IPAddress ip)
         {
