@@ -26,7 +26,8 @@ namespace Tests
         {
             TestResult();
             TestNetwork();
-            TestUserIdle();
+            TestSys();
+            TestUser();
         }
 
         private static void TestResult()
@@ -68,7 +69,12 @@ namespace Tests
             bool b2 = ip2.IsInternal(); // false
         }
 
-        private static void TestUserIdle()
+        private static void TestSys()
+        {
+            Debugger.Log(0, "test", $"Builtin user group is {Sys.BuiltinGroupName}\n");
+        }
+
+        private static void TestUser()
         {
             for (int i = 0; i < 10; ++i)
             {
