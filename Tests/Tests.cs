@@ -72,7 +72,7 @@ namespace Tests
         {
             for (int i = 0; i < 10; ++i)
             {
-                Debugger.Log(0, "test", $"Seconds since last user input: {UserIdle.Time.TotalSeconds}\n");
+                Debugger.Log(0, "test", $"Seconds since last user input: {User.IdleTime.TotalSeconds}\n");
                 Thread.Sleep(1000);
             }
         }

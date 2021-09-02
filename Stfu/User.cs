@@ -15,13 +15,13 @@ using System.Runtime.InteropServices;
 
 namespace Stfu
 {
-    public static class UserIdle
+    public static class User
     {
         /// <summary>
         /// Return a timespan indicating the user input idle time. Note that this
         /// value will wrap around every 25 days or so (2^31 milliseconds).
         /// </summary>
-        public static TimeSpan Time
+        public static TimeSpan IdleTime
         {
             get
             {
