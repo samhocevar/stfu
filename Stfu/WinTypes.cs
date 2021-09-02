@@ -10,6 +10,9 @@
 //  See http://www.wtfpl.net/ for more details.
 //
 
+using System;
+using System.Runtime.InteropServices;
+
 namespace Stfu
 {
     // Enums from winnt.h
@@ -27,4 +30,15 @@ namespace Stfu
         SidTypeLabel,
         SidTypeLogonSession,
     };
+
+    // Structs from winuser.h
+    [StructLayout(LayoutKind.Sequential)]
+    struct LASTINPUTINFO
+    {
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 cbSize;
+
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 dwTime;
+    }
 }

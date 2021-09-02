@@ -13,7 +13,9 @@
 using Stfu;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
+using System.Threading;
 
 namespace Tests
 {
@@ -24,6 +26,7 @@ namespace Tests
         {
             TestResult();
             TestNetwork();
+            TestUserIdle();
         }
 
         private static void TestResult()
@@ -63,6 +66,15 @@ namespace Tests
 
             var ip2 = IPAddress.Parse("123.45.67.89");
             bool b2 = ip2.IsInternal(); // false
+        }
+
+        private static void TestUserIdle()
+        {
+            for (int i = 0; i < 10; ++i)
+            {
+                Debugger.Log(0, "test", $"Seconds since last user input: {UserIdle.Time.TotalSeconds}\n");
+                Thread.Sleep(1000);
+            }
         }
     }
 }

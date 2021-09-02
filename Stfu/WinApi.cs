@@ -27,5 +27,12 @@ namespace Stfu
             [MarshalAs(UnmanagedType.LPArray)] byte[] Sid, StringBuilder lpName,
             ref uint cchName, StringBuilder ReferencedDomainName,
             ref uint cchReferencedDomainName, out SID_NAME_USE peUse);
+
+        //
+        // for UserIdle.cs
+        //
+
+        [DllImport("user32.dll")]
+        public static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
     };
 }
