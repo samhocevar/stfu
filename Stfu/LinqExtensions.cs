@@ -98,10 +98,17 @@ namespace Stfu.Linq
         }
 
         /// <summary>
+        /// Intersperse a value between elements of a sequence
+        /// e.g. { 1, 2, 3 } ⇒ { 1, 0, 2, 0, 3 }
+        /// </summary>
+        public static IEnumerable<T> Intersperse<T>(this IEnumerable<T> elements, T delim)
+            => elements.SelectMany((e) => new T[] {delim, e}).Skip(1);
+
+        /// <summary>
         /// Convert a sequence into a hashset
         /// </summary>
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> elements,
-                                                IEqualityComparer<T> comparer = null)
+                                              IEqualityComparer<T> comparer = null)
             => new HashSet<T>(elements, comparer);
 
         /// <summary>
