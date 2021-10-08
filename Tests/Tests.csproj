@@ -1,10 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net40;netcoreapp3.1;net50-windows</TargetFrameworks>
+    <Title>Stfu</Title>
+    <Product>Tests</Product>
+    <Authors>Sam Hocevar</Authors>
+    <Copyright>Copyright © 2017—2021 Sam Hocevar</Copyright>
+    <Description>Sam’s Tiny Framework Utilities</Description>
+    <PackageLicenseExpression>WTFPL</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/samhocevar/stfu</PackageProjectUrl>
+    <PackageTags>C# .NET WPF</PackageTags>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <UseWPF>true</UseWPF>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <DefaultItemExcludes>
+        $(DefaultItemExcludes);gitversion.json;**\*.swp;**\*~;
+    </DefaultItemExcludes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Stfu\Stfu.csproj" />
   </ItemGroup>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+
 </Project>
