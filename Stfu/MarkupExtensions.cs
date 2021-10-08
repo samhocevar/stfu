@@ -17,6 +17,7 @@ using System.Windows.Markup;
 
 namespace Stfu.Wpf
 {
+    [ValueConversion(typeof(bool), typeof(bool))]
     public class BoolInverter : MarkupExtension, IValueConverter
     {
         public override object ProvideValue(IServiceProvider serviceProvider) => this;
