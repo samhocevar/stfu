@@ -80,8 +80,17 @@ namespace Stfu.Linq
         }
 
         /// <summary>
+        /// Insert element into sequence at given index
+        /// e.g. { 1, 2, 3 } 42 1 ⇒ { 1, 42, 2, 3 }
+        /// </summary>
+        public static IEnumerable<T> InsertAt<T>(this IEnumerable<T> elements, T e, int index)
+            => elements.Take(index).Concat(e.Yield()).Concat(elements.Skip(index));
+
+        /// <summary>
         /// Convert a sequence into a context-aware sequence
-        /// e.g. { 12, 42, 17 } ⇒ { [0, 12, 42], [12, 42, 17], [42, 17, 0] }
+        /// e.g. { 12, 42, 17 } ⇒ { [0, 12, 42],
+        ///                            [12, 42, 17],
+        ///                                [42, 17, 0] }
         /// </summary>
         public static IEnumerable<(T Previous, T Current, T Next)> WithPreviousAndNext<T>(this IEnumerable<T> elements)
         {
@@ -99,7 +108,7 @@ namespace Stfu.Linq
 
         /// <summary>
         /// Intersperse a value between elements of a sequence
-        /// e.g. { 1, 2, 3 } ⇒ { 1, 0, 2, 0, 3 }
+        /// e.g. { 1, 2, 3 }, 0 ⇒ { 1, 0, 2, 0, 3 }
         /// </summary>
         public static IEnumerable<T> Intersperse<T>(this IEnumerable<T> elements, T delim)
             => elements.SelectMany((e) => new T[] {delim, e}).Skip(1);
