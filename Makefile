@@ -3,9 +3,10 @@
 #  - dotnet (ensure dotnet.exe is in %PATH%)
 
 CONFIG = Release
+VSVERSION = 2019
 
 VSWHERE = "${ProgramFiles(x86)}/Microsoft Visual Studio/Installer/vswhere.exe"
-MSBUILD = "$(shell $(VSWHERE) -find msbuild | head -n 1)/Current/Bin/MSBuild.exe"
+MSBUILD = "$(shell $(VSWHERE) -find msbuild | grep $(VSVERSION) | head -n 1)/Current/Bin/MSBuild.exe"
 
 all:
 	$(MSBUILD) Stfu.sln -t:clean -p:configuration=$(CONFIG)
