@@ -1,7 +1,7 @@
 ﻿//
 //  Stfu — Sam’s Tiny Framework Utilities
 //
-//  Copyright © 2013—2021 Sam Hocevar <sam@hocevar.net>
+//  Copyright © 2013–2022 Sam Hocevar <sam@hocevar.net>
 //
 //  This library is free software. It comes without any warranty, to
 //  the extent permitted by applicable law. You can redistribute it
@@ -74,16 +74,22 @@ namespace Stfu
         public static implicit operator Result<T>(T val)
             => new Result<T>(val);
 
+        /// <summary>
+        /// Create a typed result object from a generic result object. If one. If r.IsError is true,
+        /// the result value is set to default(T). In practice, this will be null, or 0, or false.
+        /// If r.IsError is false, we attempt to explicitly construct a T object instead.
+        /// <param name="r"></param>
+        /// </summary>
         public static implicit operator Result<T>(Result r)
         {
             try
             {
-                return new Result<T>((T)Activator.CreateInstance(typeof(T))) { m_message = r.Message };
+                if (!r.IsError)
+                    return new Result<T>((T)Activator.CreateInstance(typeof(T))) { m_message = r.Message };
             }
-            catch
-            {
-                return new Result<T>((T)Convert.ChangeType(null, typeof(T))) { m_message = r.Message };
-            }
+            catch {}
+
+            return new Result<T>(default(T)) { m_message = r.Message };
         }
 
 
