@@ -1,4 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//
+//  Stfu — Sam’s Tiny Framework Utilities
+//
+//  Copyright © 2013–2023 Sam Hocevar <sam@hocevar.net>
+//
+//  This library is free software. It comes without any warranty, to
+//  the extent permitted by applicable law. You can redistribute it
+//  and/or modify it under the terms of the Do What the Fuck You Want
+//  to Public License, Version 2, as published by the WTFPL Task Force.
+//  See http://www.wtfpl.net/ for more details.
+//
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Stfu.Linq;
 using System.Linq;
 
@@ -10,9 +22,10 @@ namespace Tests2
         [TestMethod]
         public void TestYield()
         {
-            var seq = 42.Yield();
+            var seq = 'A'.Yield();
             Assert.IsNotNull(seq);
             Assert.AreEqual(1, seq.Count());
+            Assert.AreEqual('A', seq.First());
         }
 
         [TestMethod]
@@ -34,7 +47,7 @@ namespace Tests2
 
             // Underflow
             var a3 = new char[] { 'A', 'B' };
-            var l3 = a3.InsertAt('X', -1);
+            var l3 = a3.InsertAt('X', -12);
             Assert.AreEqual(3, l3.Count());
             Assert.AreEqual('X', l3.ElementAt(0));
             Assert.AreEqual('A', l3.ElementAt(1));
