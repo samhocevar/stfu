@@ -3,7 +3,7 @@
     <Title>Stfu</Title>
     <Product>Tests</Product>
     <Authors>Sam Hocevar</Authors>
-    <Copyright>Copyright © 2017—2021 Sam Hocevar</Copyright>
+    <Copyright>Copyright © 2017–2023 Sam Hocevar</Copyright>
     <Description>Sam’s Tiny Framework Utilities</Description>
     <PackageLicenseExpression>WTFPL</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/samhocevar/stfu</PackageProjectUrl>

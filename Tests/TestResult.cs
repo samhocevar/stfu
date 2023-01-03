@@ -1,4 +1,4 @@
-﻿//
+//
 //  Stfu — Sam’s Tiny Framework Utilities
 //
 //  Copyright © 2013–2022 Sam Hocevar <sam@hocevar.net>
