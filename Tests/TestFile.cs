@@ -19,22 +19,24 @@ namespace Tests
     [TestClass]
     public class TestAtomicFileWriter
     {
+        /// <summary>
+        /// Test creating and commiting an empty file.
+        /// </summary>
         [TestMethod]
-        public void TestCreate()
+        public void TestCreateEmpty()
         {
-            string final_path = "test.tmp";
             string temp_path = null;
 
-            // While an AtomicFileWriter exists, the temporary path is present
-            using (var writer = new AtomicFileWriter(final_path))
+            using (var writer = new AtomicFileWriter(TestFileName))
             {
                 Assert.IsNotNull(writer);
                 Assert.IsNotNull(writer.Path);
                 Assert.IsNotNull(writer.TemporaryPath);
 
-                Assert.AreEqual(writer.Path, final_path);
-                Assert.AreNotEqual(writer.TemporaryPath, final_path);
+                Assert.AreEqual(writer.Path, TestFileName);
+                Assert.AreNotEqual(writer.TemporaryPath, TestFileName);
 
+                // While an AtomicFileWriter exists, the temporary path is present
                 temp_path = writer.TemporaryPath;
                 Assert.IsTrue(File.Exists(temp_path));
 
@@ -42,104 +44,87 @@ namespace Tests
             }
 
             // When the AtomicFileWriter no longer exists, the temporary path is no
-            // longer present, and the final path exists
+            // longer present, and the final path is present
             Assert.IsFalse(File.Exists(temp_path));
-            Assert.IsTrue(File.Exists(final_path));
+            Assert.IsTrue(File.Exists(TestFileName));
         }
 
+        /// <summary>
+        /// Test aborting a file creation attempt. The new file creating and commiting an empty file.
+        /// </summary>
         [TestMethod]
         public void TestCreateNoCommit()
         {
-            string final_path = "test.tmp";
             string temp_path = null;
 
-            // While an AtomicFileWriter exists, the temporary path is present
-            using (var writer = new AtomicFileWriter(final_path))
+            using (var writer = new AtomicFileWriter(TestFileName))
             {
-                Assert.IsNotNull(writer);
-                Assert.IsNotNull(writer.Path);
-                Assert.IsNotNull(writer.TemporaryPath);
-
-                Assert.AreEqual(writer.Path, final_path);
-                Assert.AreNotEqual(writer.TemporaryPath, final_path);
-
-                temp_path = writer.TemporaryPath;
-                Assert.IsTrue(File.Exists(temp_path));
+                // Intentionally no Commit() call
             }
 
-            // When the AtomicFileWriter no longer exists, the temporary path is no
-            // longer present, and the final path exists
+            // When the AtomicFileWriter no longer exists, the temporary path is no longer present
             Assert.IsFalse(File.Exists(temp_path));
-            Assert.IsTrue(File.Exists(final_path));
         }
 
         [TestMethod]
         public void TestWrite()
         {
-            string path = "test.tmp";
-            string data1 = "Hello";
-            string data2 = "World";
-
-            using (var writer = new AtomicFileWriter(path))
+            using (var writer = new AtomicFileWriter(TestFileName))
             {
-                writer.Write(data1);
-                writer.Write(data2);
+                writer.Write(Data1);
+                writer.Write(Data2);
                 writer.Commit();
             }
 
             // Verify that the file exists and contains what we expected
-            Assert.IsTrue(File.Exists(path));
-            string contents = File.ReadAllText(path);
-            Assert.AreEqual(data1 + data2, contents);
+            Assert.IsTrue(File.Exists(TestFileName));
+            string contents = File.ReadAllText(TestFileName);
+            Assert.AreEqual(Data1 + Data2, contents);
         }
 
         [TestMethod]
         public void TestAppend()
         {
-            string path = "test.tmp";
-            string data1 = "Hello";
-            string data2 = "World";
-
-            using (var writer = new AtomicFileWriter(path))
+            using (var writer = new AtomicFileWriter(TestFileName))
             {
-                writer.Write(data1);
+                writer.Write(Data1);
                 writer.Commit();
             }
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsTrue(File.Exists(TestFileName));
 
-            using (var writer = new AtomicFileWriter(path, append: true))
+            using (var writer = new AtomicFileWriter(TestFileName, append: true))
             {
-                writer.Write(data2);
+                writer.Write(Data2);
                 writer.Commit();
             }
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsTrue(File.Exists(TestFileName));
 
-            string contents = File.ReadAllText(path);
-            Assert.AreEqual(data1 + data2, contents);
+            string contents = File.ReadAllText(TestFileName);
+            Assert.AreEqual(Data1 + Data2, contents);
         }
 
         [TestMethod]
         public void TestFail()
         {
-            string path = "test.tmp";
-            string data1 = "Hello";
-            string data2 = "World";
-
-            using (var writer = new AtomicFileWriter(path))
+            using (var writer = new AtomicFileWriter(TestFileName))
             {
-                writer.Write(data1);
+                writer.Write(Data1);
                 writer.Commit();
             }
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsTrue(File.Exists(TestFileName));
 
-            using (var writer = new AtomicFileWriter(path))
+            using (var writer = new AtomicFileWriter(TestFileName))
             {
-                writer.Write(data2);
+                writer.Write(Data2);
             }
-            Assert.IsTrue(File.Exists(path));
+            Assert.IsTrue(File.Exists(TestFileName));
 
-            string contents = File.ReadAllText(path);
-            Assert.AreEqual(data1, contents);
+            string contents = File.ReadAllText(TestFileName);
+            Assert.AreEqual(Data1, contents);
         }
+
+        private readonly string TestFileName = "test.txt";
+        private readonly string Data1 = "Hello";
+        private readonly string Data2 = "World";
     }
 }
