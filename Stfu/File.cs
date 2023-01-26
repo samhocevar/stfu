@@ -16,40 +16,50 @@ using System.Text;
 
 namespace Stfu
 {
-    public class AtomicFileWriter : StreamWriter
+    public class AtomicFileWriter : TextWriter
     {
         public AtomicFileWriter(string path)
-          : base($"{path}~")
-            => Initialize(path);
+        {
+            Initialize(path, false);
+            m_stream = new StreamWriter(TemporaryPath);
+        }
 
         public AtomicFileWriter(string path, bool append)
-          : base($"{path}~", append)
-            => Initialize(path);
+        {
+            Initialize(path, append);
+            m_stream = new StreamWriter(TemporaryPath, append);
+        }
 
         public AtomicFileWriter(string path, bool append, Encoding encoding)
-          : base($"{path}~", append, encoding)
-            => Initialize(path);
+        {
+            Initialize(path, append);
+            m_stream = new StreamWriter(TemporaryPath, append, encoding);
+        }
 
         public AtomicFileWriter(string path, bool append, Encoding encoding, int bufferSize)
-          : base($"{path}~", append, encoding, bufferSize)
-            => Initialize(path);
-
-#if false
-        public AtomicFileWriter(string path, Encoding encoding, FileStreamOptions options)
-          : base($"{path}~", encoding, options)
-            => Initialize(path);
-#endif
-
-        private void Initialize(string path)
         {
-            // Best way to detect path and permission errors early is to try to append
-            // to the destination file and immediately close it. Otherwise these issues
-            // are not known until the stream is closed.
-            using (var _ = new StreamWriter(path, append: true))
-            {
-            }
+            Initialize(path, append);
+            m_stream = new StreamWriter(TemporaryPath, append, encoding, bufferSize);
+        }
 
-            Path = path;
+        public override void Write(string value)
+            => m_stream.Write(value);
+
+        public override Encoding Encoding
+            => m_stream.Encoding;
+
+        public void Commit()
+        {
+            if (m_closed)
+                throw new InvalidOperationException();
+
+            m_stream.Close();
+#if NETCOREAPP || NETSTANDARD
+            File.Move(TemporaryPath, Path, overwrite: true);
+#else
+            File.Move(TemporaryPath, Path);
+#endif
+            m_closed = true;
         }
 
         // Note from the TextWriter.Close() documentation:
@@ -57,27 +67,53 @@ namespace Stfu
         // TextWriter.Dispose(Boolean) method to add code for releasing resources.”
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
-
             // Note from the TextWriter.Dispose() documentation:
             // ”Dispose(Boolean) can be called multiple times by other objects. When
             // overriding this method, be careful not to reference objects that have
             // been previously disposed of in an earlier call to Dispose.”
-            if (disposing && !m_moved)
+            if (!m_disposed)
             {
-#if NETCOREAPP || NETSTANDARD
-                File.Move(TemporaryPath, Path, overwrite: true);
-#else
-                File.Move(TemporaryPath, Path);
-#endif
-                m_moved = true;
+                m_stream.Dispose();
+                m_disposed = true;
+
+                try
+                {
+                    File.Delete(TemporaryPath);
+                }
+                catch { }
             }
         }
 
         public string Path { get; private set; }
 
-        public string TemporaryPath => $"{Path}~";
+        public string TemporaryPath { get; private set; }
 
-        private bool m_moved;
+        private void Initialize(string path, bool append)
+        {
+            Path = path;
+            TemporaryPath = $"{path}~";
+
+            // Best way to detect path and permission errors early is to try to append
+            // to the destination file and immediately close it. Otherwise these issues
+            // are not known until the stream is closed.
+            if (File.Exists(Path))
+            {
+                using (var _ = new StreamWriter(Path, append: true))
+                {
+                }
+            }
+
+            // If opened in append mode, first copy the original file to the temporary
+            // file location. We will append to that new file.
+            if (append && File.Exists(Path))
+            {
+                File.Copy(Path, TemporaryPath);
+            }
+        }
+
+        private StreamWriter m_stream;
+
+        private bool m_closed;
+        private bool m_disposed;
     }
 }
