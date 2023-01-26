@@ -54,12 +54,16 @@ namespace Stfu
                 throw new InvalidOperationException();
 
             m_stream.Close();
+            m_closed = true;
+
 #if NETCOREAPP || NETSTANDARD
             File.Move(TemporaryPath, Path, overwrite: true);
 #else
+            // Not very atomic unfortunately, but this is how MSFT does it in the
+            // File.Move() documentation for .NET 7.0.
+            File.Delete(Path);
             File.Move(TemporaryPath, Path);
 #endif
-            m_closed = true;
         }
 
         // Note from the TextWriter.Close() documentation:
