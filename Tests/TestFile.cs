@@ -67,7 +67,23 @@ namespace Tests
         }
 
         [TestMethod]
-        public void TestWrite()
+        public void TestWriteChar()
+        {
+            using (var writer = new AtomicFileWriter(TestFileName))
+            {
+                foreach (char c in Data1)
+                    writer.Write(c);
+                writer.Commit();
+            }
+
+            // Verify that the file exists and contains what we expected
+            Assert.IsTrue(File.Exists(TestFileName));
+            string contents = File.ReadAllText(TestFileName);
+            Assert.AreEqual(Data1, contents);
+        }
+
+        [TestMethod]
+        public void TestWriteString()
         {
             using (var writer = new AtomicFileWriter(TestFileName))
             {

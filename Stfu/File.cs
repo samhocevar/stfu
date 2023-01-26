@@ -42,8 +42,19 @@ namespace Stfu
             m_stream = new StreamWriter(TemporaryPath, append, encoding, bufferSize);
         }
 
-        public override void Write(string value)
-            => m_stream.Write(value);
+        /// <summary>
+        /// This is the only method that actually needs implementing, all the others rely on this
+        /// </summary>
+        /// <param name="c"></param>
+        public override void Write(char c)
+            => m_stream.Write(c);
+
+        /// <summary>
+        /// This override is not necessary but probably helps a bit with performance
+        /// </summary>
+        /// <param name="s"></param>
+        public override void Write(string s)
+            => m_stream.Write(s);
 
         public override Encoding Encoding
             => m_stream.Encoding;
