@@ -13,7 +13,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Stfu;
 
-namespace Tests2
+namespace Tests
 {
     [TestClass]
     public class TestSys

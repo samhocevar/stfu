@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Stfu;
 using System.Net;
 
-namespace Tests2
+namespace Tests
 {
     [TestClass]
     public class TestNetworkExtensions

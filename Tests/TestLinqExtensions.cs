@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Stfu.Linq;
 using System.Linq;
 
-namespace Tests2
+namespace Tests
 {
     [TestClass]
     public class TestLinqExtensions

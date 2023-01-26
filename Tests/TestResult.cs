@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using Stfu;
 
-namespace Tests2
+namespace Tests
 {
     [TestClass]
     public class TestResult
