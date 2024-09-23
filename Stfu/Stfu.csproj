@@ -3,13 +3,14 @@
     <Title>Stfu</Title>
     <Product>Stfu</Product>
     <Authors>Sam Hocevar</Authors>
-    <Copyright>Copyright © 2017–2023 Sam Hocevar</Copyright>
+    <Copyright>Copyright © 2017–2024 Sam Hocevar</Copyright>
     <Description>Sam’s Tiny Framework Utilities</Description>
     <PackageLicenseExpression>WTFPL</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/samhocevar/stfu</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>C# .NET WPF</PackageTags>
     <OutputType>Library</OutputType>
+    <LangVersion>9.0</LangVersion>
     <TargetFrameworks>net40;netcoreapp3.1</TargetFrameworks>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
